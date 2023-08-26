@@ -4,7 +4,9 @@ WORKDIR /app
 COPY package.json .
 RUN npm i
 COPY . .
-RUN npm run build
+RUN cd client && npm i && cd ..
+RUN npm run build:client
+RUN npm run build:server
 
 EXPOSE ${APP_PORT}
 

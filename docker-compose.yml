@@ -4,7 +4,9 @@ services:
     ports:
       - "8080:${APP_PORT}"
     depends_on:
-      - db
+      db:
+        condition: service_healthy
+
   db:
     image: postgres
     restart: always
@@ -14,6 +16,10 @@ services:
       POSTGRES_PASSWORD: ${DB_PASSWORD}
     ports:
       - "5432:5432"
+    healthcheck:
+      test: "pg_isready --username=${DB_USER} && psql --username=${DB_USER} --list"
+      timeout: 10s
+      retries: 20
     volumes:
       - pgdata:/var/lib/postgresql/data
 volumes:
